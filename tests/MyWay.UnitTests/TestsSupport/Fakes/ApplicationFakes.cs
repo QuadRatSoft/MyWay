@@ -4,6 +4,8 @@ using MyWay.Application.Abstractions.Services;
 using MyWay.Application.Common.Pagination;
 using MyWay.Application.UseCases.Boards;
 using MyWay.Core.CarrierListings;
+using MyWay.Core.Companies;
+using MyWay.Core.Resources;
 using MyWay.Core.Shipments;
 
 namespace MyWay.UnitTests.TestsSupport.Fakes;
@@ -327,6 +329,122 @@ internal sealed class InMemoryCarrierListingRepository : ICarrierListingReposito
     public Task AddAsync(CarrierListing entity, CancellationToken cancellationToken = default)
     {
         carrierListings[entity.Id] = entity;
+
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed class InMemoryCompanyMemberRepository : ICompanyMemberRepository
+{
+    private readonly Dictionary<Guid, CompanyMember> members = [];
+
+    public IReadOnlyCollection<CompanyMember> Members => members.Values.ToArray();
+
+    public Task<CompanyMember?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        members.TryGetValue(id, out var member);
+
+        return Task.FromResult(member);
+    }
+
+    public Task<IReadOnlyCollection<CompanyMember>> GetActiveMembersByCompanyIdAsync(
+        Guid companyId,
+        CancellationToken cancellationToken = default)
+    {
+        IReadOnlyCollection<CompanyMember> result = members.Values
+            .Where(member => member.CompanyId == companyId && member.IsActive)
+            .ToArray();
+
+        return Task.FromResult(result);
+    }
+
+    public Task<IReadOnlyCollection<CompanyMember>> GetActiveMembershipsByUserIdAsync(
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        IReadOnlyCollection<CompanyMember> result = members.Values
+            .Where(member => member.UserId == userId && member.IsActive)
+            .ToArray();
+
+        return Task.FromResult(result);
+    }
+
+    public Task<CompanyMember?> GetActiveMembershipAsync(
+        Guid companyId,
+        Guid userId,
+        CancellationToken cancellationToken = default)
+    {
+        var membership = members.Values.FirstOrDefault(member =>
+            member.CompanyId == companyId
+            && member.UserId == userId
+            && member.IsActive);
+
+        return Task.FromResult(membership);
+    }
+
+    public Task AddAsync(CompanyMember entity, CancellationToken cancellationToken = default)
+    {
+        members[entity.Id] = entity;
+
+        return Task.CompletedTask;
+    }
+}
+
+internal sealed class InMemoryResourceReservationRepository : IResourceReservationRepository
+{
+    private readonly Dictionary<Guid, ResourceReservation> reservations = [];
+
+    public IReadOnlyCollection<ResourceReservation> Reservations => reservations.Values.ToArray();
+
+    public Task<ResourceReservation?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        reservations.TryGetValue(id, out var reservation);
+
+        return Task.FromResult(reservation);
+    }
+
+    public Task<IReadOnlyCollection<ResourceReservation>> GetActiveByDriverUserIdAsync(
+        Guid driverUserId,
+        CancellationToken cancellationToken = default)
+    {
+        IReadOnlyCollection<ResourceReservation> result = reservations.Values
+            .Where(reservation =>
+                reservation.Status == ResourceReservationStatus.Active
+                && reservation.UsesDriver(driverUserId))
+            .ToArray();
+
+        return Task.FromResult(result);
+    }
+
+    public Task<IReadOnlyCollection<ResourceReservation>> GetActiveByVehicleIdAsync(
+        Guid vehicleId,
+        CancellationToken cancellationToken = default)
+    {
+        IReadOnlyCollection<ResourceReservation> result = reservations.Values
+            .Where(reservation =>
+                reservation.Status == ResourceReservationStatus.Active
+                && reservation.UsesVehicle(vehicleId))
+            .ToArray();
+
+        return Task.FromResult(result);
+    }
+
+    public Task<IReadOnlyCollection<ResourceReservation>> GetActiveByShipmentOrderIdAsync(
+        Guid shipmentOrderId,
+        CancellationToken cancellationToken = default)
+    {
+        IReadOnlyCollection<ResourceReservation> result = reservations.Values
+            .Where(reservation =>
+                reservation.Status == ResourceReservationStatus.Active
+                && reservation.ShipmentOrderId == shipmentOrderId)
+            .ToArray();
+
+        return Task.FromResult(result);
+    }
+
+    public Task AddAsync(ResourceReservation entity, CancellationToken cancellationToken = default)
+    {
+        reservations[entity.Id] = entity;
 
         return Task.CompletedTask;
     }
