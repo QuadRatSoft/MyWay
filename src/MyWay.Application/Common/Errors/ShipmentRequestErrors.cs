@@ -8,4 +8,11 @@ public static class ShipmentRequestErrors
             "ShipmentRequests.NotFound",
             $"Shipment request '{id}' was not found.");
     }
+
+    public static ApplicationError NotPublished(Guid id)
+    {
+        return ApplicationError.Create(
+            "ShipmentRequests.NotPublished",
+            $"Shipment request '{id}' is not published.");
+    }
 }

@@ -62,6 +62,37 @@ public sealed class ShipmentOfferUseCaseTests
     }
 
     [Fact]
+    public async Task CreateOffer_ShouldReturnNotPublished_WhenRequestIsDraft()
+    {
+        var services = TestServices.Create();
+        var request = CreateDraftRequest(Guid.NewGuid());
+        await services.ShipmentRequests.AddAsync(request);
+        var useCase = services.CreateShipmentOfferUseCase();
+
+        var result = await useCase.ExecuteAsync(CreateOfferCommand(request.Id, Guid.NewGuid(), null));
+
+        AssertFailure(result, "ShipmentRequests.NotPublished");
+        Assert.Empty(services.ShipmentOffers.Offers);
+        Assert.Equal(0, services.UnitOfWork.SaveChangesCallCount);
+    }
+
+    [Fact]
+    public async Task CreateOffer_ShouldReturnNotPublished_WhenRequestIsCancelled()
+    {
+        var services = TestServices.Create();
+        var request = CreateDraftRequest(Guid.NewGuid());
+        request.Cancel("No longer needed", DomainTestData.ChangedAt);
+        await services.ShipmentRequests.AddAsync(request);
+        var useCase = services.CreateShipmentOfferUseCase();
+
+        var result = await useCase.ExecuteAsync(CreateOfferCommand(request.Id, Guid.NewGuid(), null));
+
+        AssertFailure(result, "ShipmentRequests.NotPublished");
+        Assert.Empty(services.ShipmentOffers.Offers);
+        Assert.Equal(0, services.UnitOfWork.SaveChangesCallCount);
+    }
+
+    [Fact]
     public async Task CreateOffer_ShouldReturnForbidden_WhenUserCannotActAsCarrier()
     {
         var services = TestServices.Create();
@@ -251,9 +282,9 @@ public sealed class ShipmentOfferUseCaseTests
             "Can deliver");
     }
 
-    private static ShipmentRequest CreatePublishedRequest(Guid customerUserId)
+    private static ShipmentRequest CreateDraftRequest(Guid customerUserId)
     {
-        var request = ShipmentRequest.CreatePublic(
+        return ShipmentRequest.CreatePublic(
             Guid.NewGuid(),
             customerUserId,
             null,
@@ -264,6 +295,11 @@ public sealed class ShipmentOfferUseCaseTests
             DomainTestData.PlannedPickupAt,
             DomainTestData.PlannedDeliveryAt,
             DomainTestData.CreatedAt);
+    }
+
+    private static ShipmentRequest CreatePublishedRequest(Guid customerUserId)
+    {
+        var request = CreateDraftRequest(customerUserId);
 
         request.Publish(DomainTestData.ChangedAt);
 

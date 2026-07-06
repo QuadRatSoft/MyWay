@@ -51,6 +51,11 @@ public sealed class CreateShipmentOfferUseCase
             return Result<Guid>.Failure(ShipmentRequestErrors.NotFound(command.ShipmentRequestId));
         }
 
+        if (request.Status != ShipmentRequestStatus.Published)
+        {
+            return Result<Guid>.Failure(ShipmentRequestErrors.NotPublished(request.Id));
+        }
+
         var canActAsCarrier = await userAccessService.CanActAsCarrierAsync(
             currentUserId,
             command.CarrierUserId,
