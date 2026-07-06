@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MyWay.Application\MyWay.Application.csproj" />
     <ProjectReference Include="..\..\src\MyWay.Core\MyWay.Core.csproj" />
   </ItemGroup>
 
