@@ -27,6 +27,11 @@ public sealed class ShipmentOffer
         CreatedAt = createdAt;
     }
 
+    private ShipmentOffer()
+    {
+        OfferedPrice = null!;
+    }
+
     public Guid Id { get; private set; }
 
     public Guid ShipmentRequestId { get; private set; }

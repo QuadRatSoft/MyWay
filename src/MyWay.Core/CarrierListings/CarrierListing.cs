@@ -27,6 +27,11 @@ public sealed class CarrierListing
         CreatedAt = createdAt;
     }
 
+    private CarrierListing()
+    {
+        Title = null!;
+    }
+
     public Guid Id { get; private set; }
 
     public Guid CarrierProfileId { get; private set; }

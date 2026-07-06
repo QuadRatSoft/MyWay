@@ -52,6 +52,16 @@ public sealed class Waybill
         CreatedAt = createdAt;
     }
 
+    private Waybill()
+    {
+        Number = null!;
+        VehiclePlateNumber = null!;
+        PickupAddress = null!;
+        DeliveryAddress = null!;
+        CargoDetails = null!;
+        TripPeriod = null!;
+    }
+
     public Guid Id { get; private set; }
 
     public Guid ShipmentOrderId { get; private set; }

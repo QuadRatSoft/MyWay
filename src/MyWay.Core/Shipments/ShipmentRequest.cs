@@ -37,6 +37,14 @@ public sealed class ShipmentRequest
         CreatedAt = createdAt;
     }
 
+    private ShipmentRequest()
+    {
+        PickupAddress = null!;
+        DeliveryAddress = null!;
+        CargoDetails = null!;
+        CustomerPrice = null!;
+    }
+
     public Guid Id { get; private set; }
 
     public Guid CreatedByUserId { get; private set; }

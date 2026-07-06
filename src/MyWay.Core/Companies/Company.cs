@@ -27,6 +27,11 @@ public sealed class Company
         IsActive = isActive;
     }
 
+    private Company()
+    {
+        Name = null!;
+    }
+
     public Guid Id { get; private set; }
 
     public string Name { get; private set; }

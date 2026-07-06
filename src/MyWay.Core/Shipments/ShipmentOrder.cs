@@ -44,6 +44,14 @@ public sealed class ShipmentOrder
         Status = ShipmentOrderStatus.Created;
     }
 
+    private ShipmentOrder()
+    {
+        PickupAddress = null!;
+        DeliveryAddress = null!;
+        CargoDetails = null!;
+        FinalPrice = null!;
+    }
+
     public Guid Id { get; private set; }
 
     public Guid ShipmentRequestId { get; private set; }

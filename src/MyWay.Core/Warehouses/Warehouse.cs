@@ -29,6 +29,12 @@ public sealed class Warehouse
         IsActive = isActive;
     }
 
+    private Warehouse()
+    {
+        Name = null!;
+        Address = null!;
+    }
+
     public Guid Id { get; private set; }
 
     public Guid? OwnerUserId { get; private set; }

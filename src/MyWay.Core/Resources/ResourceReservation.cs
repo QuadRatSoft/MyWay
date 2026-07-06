@@ -23,6 +23,11 @@ public sealed class ResourceReservation
         CreatedAt = createdAt;
     }
 
+    private ResourceReservation()
+    {
+        Period = null!;
+    }
+
     public Guid Id { get; private set; }
 
     public Guid ShipmentOrderId { get; private set; }
