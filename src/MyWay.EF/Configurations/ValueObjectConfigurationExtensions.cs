@@ -150,9 +150,14 @@ internal static class ValueObjectConfigurationExtensions
         bool required)
         where TEntity : class
     {
-        builder.Property(x => x.Amount)
+        var amountBuilder = builder.Property(x => x.Amount)
             .HasColumnName($"{prefix}_amount")
             .HasPrecision(18, 2);
+
+        if (required)
+        {
+            amountBuilder.IsRequired();
+        }
 
         builder.Property(x => x.Currency)
             .HasColumnName($"{prefix}_currency")

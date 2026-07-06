@@ -1,13 +1,10 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace MyWay.EF.DependencyInjection;
 
 public static class EfServiceCollectionExtensions
 {
-    public static IServiceCollection AddMyWayEf(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    public static TServices AddMyWayEf<TServices>(
+        this TServices services,
+        object? configuration)
     {
         _ = configuration;
 
