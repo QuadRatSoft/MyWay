@@ -1,6 +1,8 @@
 using MyWay.Application.Abstractions;
 using MyWay.Application.Abstractions.Repositories;
 using MyWay.Application.Abstractions.Services;
+using MyWay.Application.Common.Pagination;
+using MyWay.Application.UseCases.Boards;
 using MyWay.Core.CarrierListings;
 using MyWay.Core.Shipments;
 
@@ -88,6 +90,73 @@ internal sealed class InMemoryShipmentRequestRepository : IShipmentRequestReposi
         requests.TryGetValue(id, out var request);
 
         return Task.FromResult(request);
+    }
+
+    public Task<PagedResult<ShipmentRequest>> SearchPublishedForBoardAsync(
+        ShipmentRequestBoardFilter filter,
+        PaginationRequest pagination,
+        CancellationToken cancellationToken = default)
+    {
+        var query = requests.Values
+            .Where(request => request.Status == ShipmentRequestStatus.Published);
+
+        if (!string.IsNullOrWhiteSpace(filter.PickupCity))
+        {
+            query = query.Where(request => string.Equals(
+                request.PickupAddress.City,
+                filter.PickupCity,
+                StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.DeliveryCity))
+        {
+            query = query.Where(request => string.Equals(
+                request.DeliveryAddress.City,
+                filter.DeliveryCity,
+                StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (filter.PickupFrom.HasValue)
+        {
+            query = query.Where(request => request.PlannedPickupAt >= filter.PickupFrom.Value);
+        }
+
+        if (filter.PickupTo.HasValue)
+        {
+            query = query.Where(request => request.PlannedPickupAt <= filter.PickupTo.Value);
+        }
+
+        if (filter.MinPriceAmount.HasValue)
+        {
+            query = query.Where(request => request.CustomerPrice.Amount >= filter.MinPriceAmount.Value);
+        }
+
+        if (filter.MaxPriceAmount.HasValue)
+        {
+            query = query.Where(request => request.CustomerPrice.Amount <= filter.MaxPriceAmount.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Currency))
+        {
+            query = query.Where(request => string.Equals(
+                request.CustomerPrice.Currency,
+                filter.Currency,
+                StringComparison.OrdinalIgnoreCase));
+        }
+
+        var matchingItems = query
+            .OrderBy(request => request.CreatedAt)
+            .ToArray();
+        var items = matchingItems
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToArray();
+
+        return Task.FromResult(PagedResult<ShipmentRequest>.Create(
+            items,
+            pagination.PageNumber,
+            pagination.PageSize,
+            matchingItems.Length));
     }
 
     public Task AddAsync(ShipmentRequest entity, CancellationToken cancellationToken = default)
@@ -206,6 +275,53 @@ internal sealed class InMemoryCarrierListingRepository : ICarrierListingReposito
         carrierListings.TryGetValue(id, out var carrierListing);
 
         return Task.FromResult(carrierListing);
+    }
+
+    public Task<PagedResult<CarrierListing>> SearchVisibleForBoardAsync(
+        CarrierListingBoardFilter filter,
+        PaginationRequest pagination,
+        CancellationToken cancellationToken = default)
+    {
+        var query = carrierListings.Values
+            .Where(carrierListing => carrierListing.IsVisibleOnCarrierBoard);
+
+        if (filter.MinPriceAmount.HasValue)
+        {
+            query = query.Where(carrierListing =>
+                carrierListing.BasePrice is not null
+                && carrierListing.BasePrice.Amount >= filter.MinPriceAmount.Value);
+        }
+
+        if (filter.MaxPriceAmount.HasValue)
+        {
+            query = query.Where(carrierListing =>
+                carrierListing.BasePrice is not null
+                && carrierListing.BasePrice.Amount <= filter.MaxPriceAmount.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Currency))
+        {
+            query = query.Where(carrierListing =>
+                carrierListing.BasePrice is not null
+                && string.Equals(
+                    carrierListing.BasePrice.Currency,
+                    filter.Currency,
+                    StringComparison.OrdinalIgnoreCase));
+        }
+
+        var matchingItems = query
+            .OrderBy(carrierListing => carrierListing.CreatedAt)
+            .ToArray();
+        var items = matchingItems
+            .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+            .Take(pagination.PageSize)
+            .ToArray();
+
+        return Task.FromResult(PagedResult<CarrierListing>.Create(
+            items,
+            pagination.PageNumber,
+            pagination.PageSize,
+            matchingItems.Length));
     }
 
     public Task AddAsync(CarrierListing entity, CancellationToken cancellationToken = default)

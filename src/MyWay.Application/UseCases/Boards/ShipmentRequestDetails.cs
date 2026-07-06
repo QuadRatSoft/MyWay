@@ -1,0 +1,25 @@
+namespace MyWay.Application.UseCases.Boards;
+
+public sealed record ShipmentRequestDetails(
+    Guid Id,
+    Guid CreatedByUserId,
+    Guid? CustomerUserId,
+    Guid? CustomerCompanyId,
+    string Type,
+    string Status,
+    Guid? TargetCarrierListingId,
+    string PickupCity,
+    string PickupAddressLine,
+    string DeliveryCity,
+    string DeliveryAddressLine,
+    string CargoName,
+    decimal CargoWeightKg,
+    decimal CargoVolumeCubicMeters,
+    decimal CustomerPriceAmount,
+    string CustomerPriceCurrency,
+    DateTimeOffset PlannedPickupAt,
+    DateTimeOffset PlannedDeliveryAt,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset? PublishedAt,
+    DateTimeOffset? CancelledAt,
+    string? CancellationReason);
