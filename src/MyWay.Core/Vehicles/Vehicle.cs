@@ -60,11 +60,12 @@ public sealed class Vehicle
         VehicleType type,
         string plateNumber,
         decimal capacityKg,
+        DateTimeOffset createdAt,
         decimal? volumeM3 = null,
         string? brand = null,
         string? model = null)
     {
-        return Create(ownerUserId, null, type, plateNumber, capacityKg, volumeM3, brand, model);
+        return Create(ownerUserId, null, type, plateNumber, capacityKg, createdAt, volumeM3, brand, model);
     }
 
     public static Vehicle CreateForCompany(
@@ -72,11 +73,12 @@ public sealed class Vehicle
         VehicleType type,
         string plateNumber,
         decimal capacityKg,
+        DateTimeOffset createdAt,
         decimal? volumeM3 = null,
         string? brand = null,
         string? model = null)
     {
-        return Create(null, ownerCompanyId, type, plateNumber, capacityKg, volumeM3, brand, model);
+        return Create(null, ownerCompanyId, type, plateNumber, capacityKg, createdAt, volumeM3, brand, model);
     }
 
     public static Vehicle Create(
@@ -85,6 +87,7 @@ public sealed class Vehicle
         VehicleType type,
         string plateNumber,
         decimal capacityKg,
+        DateTimeOffset createdAt,
         decimal? volumeM3 = null,
         string? brand = null,
         string? model = null)
@@ -102,7 +105,7 @@ public sealed class Vehicle
             plateNumber.Trim(),
             capacityKg,
             volumeM3,
-            DateTimeOffset.UtcNow,
+            createdAt,
             isActive: true);
     }
 

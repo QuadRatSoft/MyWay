@@ -5,16 +5,19 @@ namespace MyWay.UnitTests.Profiles;
 
 public sealed class CarrierProfileTests
 {
+    private static readonly DateTimeOffset CreatedAt = new(2026, 7, 6, 10, 0, 0, TimeSpan.Zero);
+
     [Fact]
     public void CreateForUser_ShouldCreateCarrierProfileForUser()
     {
         var userId = Guid.NewGuid();
 
-        var profile = CarrierProfile.CreateForUser(userId, "Private carrier");
+        var profile = CarrierProfile.CreateForUser(userId, "Private carrier", CreatedAt);
 
         Assert.Equal(userId, profile.UserId);
         Assert.Null(profile.CompanyId);
         Assert.True(profile.IsActive);
+        Assert.Equal(CreatedAt, profile.CreatedAt);
     }
 
     [Fact]
@@ -22,18 +25,19 @@ public sealed class CarrierProfileTests
     {
         var companyId = Guid.NewGuid();
 
-        var profile = CarrierProfile.CreateForCompany(companyId, "Company carrier");
+        var profile = CarrierProfile.CreateForCompany(companyId, "Company carrier", CreatedAt);
 
         Assert.Null(profile.UserId);
         Assert.Equal(companyId, profile.CompanyId);
         Assert.True(profile.IsActive);
+        Assert.Equal(CreatedAt, profile.CreatedAt);
     }
 
     [Fact]
     public void Create_ShouldThrow_WhenOwnerIsMissing()
     {
         var exception = Assert.Throws<DomainException>(
-            () => CarrierProfile.Create(null, null, "Carrier"));
+            () => CarrierProfile.Create(null, null, "Carrier", CreatedAt));
 
         Assert.Contains("owner", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
@@ -42,7 +46,7 @@ public sealed class CarrierProfileTests
     public void Create_ShouldThrow_WhenUserAndCompanyOwnersAreProvided()
     {
         var exception = Assert.Throws<DomainException>(
-            () => CarrierProfile.Create(Guid.NewGuid(), Guid.NewGuid(), "Carrier"));
+            () => CarrierProfile.Create(Guid.NewGuid(), Guid.NewGuid(), "Carrier", CreatedAt));
 
         Assert.Contains("both", exception.Message, StringComparison.OrdinalIgnoreCase);
     }

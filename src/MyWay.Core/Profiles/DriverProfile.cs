@@ -35,6 +35,7 @@ public sealed class DriverProfile
     public static DriverProfile Create(
         Guid userId,
         string displayName,
+        DateTimeOffset createdAt,
         string? licenseNumber = null)
     {
         if (userId == Guid.Empty)
@@ -49,7 +50,7 @@ public sealed class DriverProfile
             userId,
             displayName.Trim(),
             NormalizeOptional(licenseNumber),
-            DateTimeOffset.UtcNow,
+            createdAt,
             isActive: true);
     }
 

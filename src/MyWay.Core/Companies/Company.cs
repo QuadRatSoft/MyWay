@@ -48,6 +48,7 @@ public sealed class Company
     public static Company Create(
         string name,
         Guid createdByUserId,
+        DateTimeOffset createdAt,
         string? legalName = null,
         string? taxNumber = null,
         Address? address = null,
@@ -68,7 +69,7 @@ public sealed class Company
             address,
             contactInfo,
             createdByUserId,
-            DateTimeOffset.UtcNow,
+            createdAt,
             isActive: true);
     }
 

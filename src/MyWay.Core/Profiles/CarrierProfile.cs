@@ -39,23 +39,26 @@ public sealed class CarrierProfile
     public static CarrierProfile CreateForUser(
         Guid userId,
         string displayName,
+        DateTimeOffset createdAt,
         string? description = null)
     {
-        return Create(userId, null, displayName, description);
+        return Create(userId, null, displayName, createdAt, description);
     }
 
     public static CarrierProfile CreateForCompany(
         Guid companyId,
         string displayName,
+        DateTimeOffset createdAt,
         string? description = null)
     {
-        return Create(null, companyId, displayName, description);
+        return Create(null, companyId, displayName, createdAt, description);
     }
 
     public static CarrierProfile Create(
         Guid? userId,
         Guid? companyId,
         string displayName,
+        DateTimeOffset createdAt,
         string? description = null)
     {
         ValidateOwner(userId, companyId);
@@ -67,7 +70,7 @@ public sealed class CarrierProfile
             companyId,
             displayName.Trim(),
             NormalizeOptional(description),
-            DateTimeOffset.UtcNow,
+            createdAt,
             isActive: true);
     }
 

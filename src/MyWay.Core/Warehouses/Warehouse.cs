@@ -53,22 +53,24 @@ public sealed class Warehouse
         Guid ownerUserId,
         string name,
         Address address,
+        DateTimeOffset createdAt,
         ContactInfo? contactInfo = null,
         string? workingHours = null,
         string? driverComment = null)
     {
-        return Create(ownerUserId, null, name, address, contactInfo, workingHours, driverComment);
+        return Create(ownerUserId, null, name, address, createdAt, contactInfo, workingHours, driverComment);
     }
 
     public static Warehouse CreateForCompany(
         Guid ownerCompanyId,
         string name,
         Address address,
+        DateTimeOffset createdAt,
         ContactInfo? contactInfo = null,
         string? workingHours = null,
         string? driverComment = null)
     {
-        return Create(null, ownerCompanyId, name, address, contactInfo, workingHours, driverComment);
+        return Create(null, ownerCompanyId, name, address, createdAt, contactInfo, workingHours, driverComment);
     }
 
     public static Warehouse Create(
@@ -76,6 +78,7 @@ public sealed class Warehouse
         Guid? ownerCompanyId,
         string name,
         Address address,
+        DateTimeOffset createdAt,
         ContactInfo? contactInfo = null,
         string? workingHours = null,
         string? driverComment = null)
@@ -93,7 +96,7 @@ public sealed class Warehouse
             contactInfo,
             NormalizeOptional(workingHours),
             NormalizeOptional(driverComment),
-            DateTimeOffset.UtcNow,
+            createdAt,
             isActive: true);
     }
 

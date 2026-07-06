@@ -40,6 +40,7 @@ public sealed class User
         Guid authUserId,
         string email,
         string displayName,
+        DateTimeOffset createdAt,
         string? phoneNumber = null)
     {
         if (authUserId == Guid.Empty)
@@ -55,7 +56,7 @@ public sealed class User
             email.Trim(),
             NormalizeOptional(phoneNumber),
             displayName.Trim(),
-            DateTimeOffset.UtcNow,
+            createdAt,
             isActive: true);
     }
 

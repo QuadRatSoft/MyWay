@@ -28,7 +28,10 @@ public sealed class CustomerProfile
 
     public bool IsActive { get; private set; }
 
-    public static CustomerProfile Create(Guid userId, string displayName)
+    public static CustomerProfile Create(
+        Guid userId,
+        string displayName,
+        DateTimeOffset createdAt)
     {
         if (userId == Guid.Empty)
         {
@@ -41,7 +44,7 @@ public sealed class CustomerProfile
             Guid.NewGuid(),
             userId,
             displayName.Trim(),
-            DateTimeOffset.UtcNow,
+            createdAt,
             isActive: true);
     }
 

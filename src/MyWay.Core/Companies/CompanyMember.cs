@@ -32,7 +32,11 @@ public sealed class CompanyMember
 
     public bool IsActive { get; private set; }
 
-    public static CompanyMember Create(Guid companyId, Guid userId, CompanyMemberRole role)
+    public static CompanyMember Create(
+        Guid companyId,
+        Guid userId,
+        CompanyMemberRole role,
+        DateTimeOffset createdAt)
     {
         ValidateIds(companyId, userId);
         ValidateRole(role);
@@ -42,7 +46,7 @@ public sealed class CompanyMember
             companyId,
             userId,
             role,
-            DateTimeOffset.UtcNow,
+            createdAt,
             isActive: true);
     }
 

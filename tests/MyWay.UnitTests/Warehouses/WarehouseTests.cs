@@ -6,16 +6,19 @@ namespace MyWay.UnitTests.Warehouses;
 
 public sealed class WarehouseTests
 {
+    private static readonly DateTimeOffset CreatedAt = new(2026, 7, 6, 10, 0, 0, TimeSpan.Zero);
+
     [Fact]
     public void CreateForUser_ShouldCreateUserWarehouse()
     {
         var ownerUserId = Guid.NewGuid();
 
-        var warehouse = Warehouse.CreateForUser(ownerUserId, "User warehouse", CreateAddress());
+        var warehouse = Warehouse.CreateForUser(ownerUserId, "User warehouse", CreateAddress(), CreatedAt);
 
         Assert.Equal(ownerUserId, warehouse.OwnerUserId);
         Assert.Null(warehouse.OwnerCompanyId);
         Assert.True(warehouse.IsActive);
+        Assert.Equal(CreatedAt, warehouse.CreatedAt);
     }
 
     [Fact]
@@ -23,18 +26,19 @@ public sealed class WarehouseTests
     {
         var ownerCompanyId = Guid.NewGuid();
 
-        var warehouse = Warehouse.CreateForCompany(ownerCompanyId, "Company warehouse", CreateAddress());
+        var warehouse = Warehouse.CreateForCompany(ownerCompanyId, "Company warehouse", CreateAddress(), CreatedAt);
 
         Assert.Null(warehouse.OwnerUserId);
         Assert.Equal(ownerCompanyId, warehouse.OwnerCompanyId);
         Assert.True(warehouse.IsActive);
+        Assert.Equal(CreatedAt, warehouse.CreatedAt);
     }
 
     [Fact]
     public void Create_ShouldThrow_WhenOwnerIsMissing()
     {
         var exception = Assert.Throws<DomainException>(
-            () => Warehouse.Create(null, null, "Warehouse", CreateAddress()));
+            () => Warehouse.Create(null, null, "Warehouse", CreateAddress(), CreatedAt));
 
         Assert.Contains("owner", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
@@ -43,7 +47,7 @@ public sealed class WarehouseTests
     public void Create_ShouldThrow_WhenUserAndCompanyOwnersAreProvided()
     {
         var exception = Assert.Throws<DomainException>(
-            () => Warehouse.Create(Guid.NewGuid(), Guid.NewGuid(), "Warehouse", CreateAddress()));
+            () => Warehouse.Create(Guid.NewGuid(), Guid.NewGuid(), "Warehouse", CreateAddress(), CreatedAt));
 
         Assert.Contains("both", exception.Message, StringComparison.OrdinalIgnoreCase);
     }
