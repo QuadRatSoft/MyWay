@@ -1,0 +1,15 @@
+services:
+  myway-postgres:
+    image: postgres:16
+    container_name: myway-postgres
+    environment:
+      POSTGRES_DB: myway
+      POSTGRES_USER: myway
+      POSTGRES_PASSWORD: myway_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - myway_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  myway_postgres_data:

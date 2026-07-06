@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyWay.Api\MyWay.Api.csproj" />
+    <ProjectReference Include="..\MyWay.Application\MyWay.Application.csproj" />
+    <ProjectReference Include="..\MyWay.Core\MyWay.Core.csproj" />
+    <ProjectReference Include="..\MyWay.EF\MyWay.EF.csproj" />
+    <ProjectReference Include="..\MyWay.Infrastructure\MyWay.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
