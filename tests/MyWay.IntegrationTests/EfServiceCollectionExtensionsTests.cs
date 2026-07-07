@@ -47,6 +47,31 @@ public sealed class EfServiceCollectionExtensionsTests
     }
 
     [Fact]
+    public void AddMyWayEf_ShouldResolveRepositoriesWithPostgresOptions()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["ConnectionStrings:MyWay"] = PostgresIntegrationTestFixture.BuildConnectionString()
+            })
+            .Build();
+
+        var services = new ServiceCollection();
+
+        services.AddMyWayEf(configuration);
+
+        using var serviceProvider = services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+
+        Assert.NotNull(scope.ServiceProvider.GetRequiredService<MyWayDbContext>());
+        Assert.NotNull(scope.ServiceProvider.GetRequiredService<IUnitOfWork>());
+        Assert.NotNull(scope.ServiceProvider.GetRequiredService<IUserRepository>());
+        Assert.NotNull(scope.ServiceProvider.GetRequiredService<IShipmentRequestRepository>());
+        Assert.NotNull(scope.ServiceProvider.GetRequiredService<ICarrierListingRepository>());
+        Assert.NotNull(scope.ServiceProvider.GetRequiredService<IResourceReservationRepository>());
+    }
+
+    [Fact]
     public void AddMyWayEf_ShouldThrow_WhenConnectionStringMissing()
     {
         var configuration = new ConfigurationBuilder().Build();
