@@ -19,7 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\MyWay.Api\MyWay.Api.csproj" />
+    <ProjectReference Include="..\..\src\MyWay.Application\MyWay.Application.csproj" />
     <ProjectReference Include="..\..\src\MyWay.EF\MyWay.EF.csproj" />
+    <ProjectReference Include="..\..\src\MyWay.Infrastructure\MyWay.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
